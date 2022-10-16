@@ -2,8 +2,10 @@
 """
 Parse a binary dump of a GQ GMC 500+.
 
-./gq-gmc-control.py --data
-./parse.py <the .bin file>
+$ ./gq-gmc-control.py -p /dev/ttyUSB0 --data
+$ ./parse.py <the .bin file> | awk -F, '{print $3}'  > b
+$ gnuplot
+gnuplot> plot 'b' w l
 """
 
 import sys
