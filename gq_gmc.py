@@ -208,14 +208,14 @@ def get_cpm(cpm_to_usievert=None):
         return -1
 
     m_device.write(b'<GETCPM>>')
-    cpm = m_device.read(2)
+    cpm = m_device.read(4)
 
-    if len(cpm) < 2:
+    if len(cpm) < 4:
         print('WARNING: no valid cpm received')
         return ''
 
-    value = struct.unpack(">H", cpm)[0]
-    print("WARNING: Clearly wrong!")
+    value = struct.unpack("<i", cpm)[0]
+    print("WARNING: Clearly wrong! Raw value 0x%x" % value)
     unit_value = (value, 'CPM')
     if cpm_to_usievert is not None:
         unit_value = convert_cpm_to_usievert(value, 'CPM', cpm_to_usievert)
