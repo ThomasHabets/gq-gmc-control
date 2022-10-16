@@ -108,7 +108,7 @@ def check_device_type():
     m_device_type = get_device_type()
 
     if m_device_type == '' or len(m_device_type) < 8:
-        print("ERROR: device not found or supported")
+        print("ERROR: device not found or supported: %s" % m_device_type)
         return -1
 
     m_device_name = m_device_type[:7]
@@ -126,7 +126,7 @@ def check_device_type():
         m_device_name = DEFAULT_DEVICE_TYPE
 
     else:
-        print("ERROR: device not found or supported")
+        print("ERROR: device not found or supported: %s" % m_device_name[:3])
         return -1
 
     return 0
@@ -186,7 +186,7 @@ def get_voltage():
         print('WARNING: no valid voltage received')
         return ''
 
-    return '{} V'.format(voltage)
+    return '{} V'.format(float(voltage)/10.0)
 
 
 def get_cpm(cpm_to_usievert=None):
@@ -436,19 +436,21 @@ def parse_data_file(in_file=DEFAULT_BIN_FILE, out_file=DEFAULT_CSV_FILE,
             marker = 0x55
             continue
 
-        value = print_data(f_out, data_type, c_str, size=1,
-                           cpm_to_usievert=cpm_to_usievert)
-        if value is not None:
-            f_out.write(value + EOL)
-
         # detect end of file, this is needed if the device is still logging but
         # hasn't reached the end of the flash memory yet
         if c_str[0] == 0xff:
             eof_count += 1
             if eof_count == 100:
                 break
+            continue
         else:
             eof_count = 0
+
+        value = print_data(f_out, data_type, c_str, size=1,
+                           cpm_to_usievert=cpm_to_usievert)
+        if value is not None:
+            f_out.write(value + EOL)
+
 
     f_in.close()
     f_out.close()
