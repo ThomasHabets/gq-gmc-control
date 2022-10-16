@@ -56,6 +56,19 @@ ADDRESS_CALIBRATE2_SV = 0x10
 ADDRESS_CALIBRATE3_CPM = 0x14
 ADDRESS_CALIBRATE3_SV = 0x16
 
+# GQ GMC-500+
+ADDRESS_WIFI_ON_OFF = 0x00     # Gives incorrect output.
+ADDRESS_COUNTER_ID = 0x126
+ADDRESS_USER_ID = 0x106
+ADDRESS_WIFI_PASSWORD = 0x85
+ADDRESS_SERVER_WEBSITE = 0xc5
+ADDRESS_CALIBRATE1_CPM = 0x09
+ADDRESS_CALIBRATE1_SV = 0x0b
+ADDRESS_CALIBRATE2_CPM = 0x0f
+ADDRESS_CALIBRATE2_SV = 0x11
+ADDRESS_CALIBRATE3_CPM = 0x15
+ADDRESS_CALIBRATE3_SV = 0x17
+
 FLASH_SIZE = {
     'GMC-280': 0x00010000,
     'GMC-300': 0x00010000,
@@ -579,7 +592,7 @@ def get_config():
                                         m_config_data[ADDRESS_CALIBRATE3_SV:ADDRESS_CALIBRATE3_SV + 4])[0]
     m_config['server_website'] = m_config_data[ADDRESS_SERVER_WEBSITE:ADDRESS_SERVER_WEBSITE + 32].decode('utf-8')
     m_config['server_url'] = m_config_data[ADDRESS_SERVER_URL:ADDRESS_SERVER_URL + 32].decode('utf-8')
-    m_config['user_id'] = m_config_data[ADDRESS_USER_ID:ADDRESS_USER_ID + 16].decode('utf-8')
+    m_config['user_id'] = m_config_data[ADDRESS_USER_ID:ADDRESS_USER_ID + 5].decode('utf-8')
     m_config['counter_id'] = m_config_data[ADDRESS_COUNTER_ID:ADDRESS_COUNTER_ID + 16].decode('utf-8')
     if ord(m_config_data[ADDRESS_WIFI_ON_OFF]) == 255:
         m_config['wifi_active'] = True
