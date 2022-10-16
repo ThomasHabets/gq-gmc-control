@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
 Parse a binary dump of a GQ GMC 500+.
+
+./gq-gmc-control.py --data
+./parse.py <the .bin file>
 """
 
 import sys
