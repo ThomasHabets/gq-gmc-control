@@ -1,3 +1,12 @@
+# LOCAL MODIFICATIONS
+
+Ugly hacks to get the code working with GQ-GCM-500+, which uses a different
+protocol:
+https://www.gqelectronicsllc.com/download/GQ-RFC1801.txt
+
+This fork should not be continued. Instead these changes should be config
+options. But I only have this one geiger counter, so I don't care.
+
 # gq-gmc-control
 
 Control tool  for the GQ GMC  Geiger Counters.  This tool  provides a convenient

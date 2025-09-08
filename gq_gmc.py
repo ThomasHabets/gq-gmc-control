@@ -151,7 +151,7 @@ def get_device_type():
         return ''
 
     m_device.write(b'<GETVER>>')
-    return m_device.read(14).decode('utf-8')
+    return m_device.read(15).decode('utf-8')
 
 
 def get_serial_number():
@@ -214,8 +214,8 @@ def get_cpm(cpm_to_usievert=None):
         print('WARNING: no valid cpm received')
         return ''
 
-    value = struct.unpack("<i", cpm)[0]
-    print("WARNING: Clearly wrong! Raw value 0x%x" % value)
+    value = struct.unpack(">i", cpm)[0]
+    #print("WARNING: Clearly wrong! Raw value 0x%x" % value)
     unit_value = (value, 'CPM')
     if cpm_to_usievert is not None:
         unit_value = convert_cpm_to_usievert(value, 'CPM', cpm_to_usievert)
@@ -487,10 +487,10 @@ def set_heartbeat(enable, cpm_to_usievert=None):
 
         try:
             while not m_terminate:
-                cpm = m_device.read(2)
+                cpm = m_device.read(4)
                 if cpm == '':
                     continue
-                value = struct.unpack(">H", cpm)[0] & 0x3fff
+                value = struct.unpack(">i", cpm)[0] & 0x3fff
 
                 unit_value = (value, 'CPS')
                 if cpm_to_usievert is not None:
