@@ -23,6 +23,17 @@ import platform
 import tempfile
 import datetime
 import gq_gmc
+import prometheus_client
+
+registry = prometheus_client.CollectorRegistry()
+
+metric_cpm = prometheus_client.Gauge(
+    "geiger_cpm",
+    "CPM, clicks per minute",
+    ["sensor"],
+    registry=registry,
+)
+
 
 VERSION = '1.1.0'
 
@@ -65,6 +76,9 @@ def handle_arguments():
     parser.add_argument('-c', '--config',
         action='store', default=None,
         help='load command line options from a configuration file')
+    parser.add_argument(
+        '--prometheus', action='store',
+        default=None, help="Send to prometheus gateway")
     # unit_group.add_argument('-S', '--output-in-sievert', metavar='CPM,Sievert', nargs='?',
     # help='don\'t log data in CPM or CPS but in micro Sieverts. optionally
     # supply a tuple used as a conversion factor. e.g. \'1000,0.0000065\'
@@ -354,7 +368,17 @@ def main():
         print(gq_gmc.get_voltage())
 
     elif args.cpm:
-        print(gq_gmc.get_cpm(cpm_to_usievert=cpm_to_usievert))
+        cpm = gq_gmc.get_cpm(cpm_to_usievert=cpm_to_usievert)
+        n = int(cpm.split(' ')[0])
+        metric_cpm.labels(sensor="unknown").set(n)
+        if not args.prometheus is None:
+            # TODO: add more fields, like model number.
+            prometheus_client.push_to_gateway(
+                args.prometheus,
+                job="gq-gmc-control",
+                registry=registry,
+            )
+        print(cpm)
 
     elif args.temperature:
         print(gq_gmc.get_temperature())
